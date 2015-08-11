@@ -1,0 +1,151 @@
+<!--
+  =========
+  Top-level
+  =========
+  -->
+  
+<head>
+   <title>Reads</title>
+   <link href='http://fonts.googleapis.com/css?family=Playfair+Display:400,400italic' rel='stylesheet' type='text/css'>
+   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+   <meta name="apple-mobile-web-app-capable" content="yes" />
+   <style>.balance-text { text-wrap: balanced; }</style>
+</head>
+
+<body>
+   <div id="body-outer"><div id="body" class="{{Focus}} {{ReaderOpen}}">
+      <div id="left"><div class="container">
+         {{> FeedsList}}
+      </div></div>
+      <div id="right"><div class="container">
+         {{> ArticlesList}}
+      </div></div>
+      <div id="center">
+         <div id="center-top-buttons"><div id="search-button"><img src="Search{{#if Filtering}}Active{{/if}}.png" /></div><div id="add-button"><img src="Add.png" /></div></div>
+         <div id="center-bottom-buttons"><div id="help-button"><img src="Help.png" /></div><div id="login-button"><img src="Login.png" /></div></div>
+         <div id="center-back-button">&lt;</div>
+      </div>
+   </div></div>
+   
+   <div id="reader" class="{{ReaderOpen}}">{{> Reader}}</div>
+   
+   {{#if Template.subscriptionsReady}}
+   <div id="popup"><div id="popup-inner">
+      {{> Popup}}
+   </div></div>
+   {{else}}
+   <div id="loading"><div id="loading-message">Loading…</div></div>
+   {{/if}}
+</body>
+
+<template name="FeedsList">
+   {{#if FilterBest}}
+      {{> BestListItem}}
+   {{/if}}
+   {{#each TripleBookmarked}}
+      {{> FeedsListItem}}
+   {{/each}}
+   {{#each DoubleBookmarked}}
+      {{> FeedsListItem}}
+   {{/each}}
+   {{#each SingleBookmarked}}
+      {{> FeedsListItem}}
+   {{/each}}
+   {{#each Others}}
+      {{> FeedsListItem}}
+   {{/each}}
+</template>
+
+<!---------- Left ---------->
+
+<template name="BestListItem">
+   <div id="best" class="feed {{#if IsSelected}}selected{{/if}} {{#if IsFocused}}focused{{/if}}">
+      <div class="feed-title">
+         <div class="feed-info">{{Unread}} new</div>Best
+      </div>
+      <div class="feed-articles">
+      {{#each SampleArticles}}
+         {{> FeedsListArticleItem}}
+      {{/each}}
+      </div>
+   </div>
+</template>
+
+<template name="FeedsListItem">
+   <div id="{{_id}}" class="feed {{#if IsSelected}}selected{{/if}} {{#if IsFocused}}focused{{/if}}">
+      <div class="feed-title">
+         <div class="feed-info">{{FormattedDate}} | <span class="stars {{#if IsBookmarked}}bookmarked{{/if}}">{{Stars}}</span></div>
+         {{{Title}}}
+      </div>
+      <div class="feed-articles">
+      {{#each SampleArticles}}
+         {{> FeedsListArticleItem}}
+      {{/each}}
+      </div>
+   </div>
+</template>
+
+<template name="FeedsListArticleItem">
+   <div class="sample-title {{#if IsRead}}read{{/if}}">{{{Title}}}</div>
+</template>
+
+<!---------- Right ---------->
+
+<template name="ArticlesList">
+   {{#each SelectionArticles}}
+      {{> ArticlesListItem}}
+   {{/each}}
+</template>
+
+<template name="ArticlesListItem">
+   <div id="{{_id}}" class="article {{#if IsRead}}read{{/if}} {{#if IsSelected}}selected{{/if}} {{#if IsFocused}}focused{{/if}}">
+      <div class="article-title">
+         <div class="date">{{{FormattedDate}}} | <span class="stars {{#if HasRated}}rated{{/if}}">{{Stars}}</span></div>
+         {{{Title}}}
+      </div>
+      <div class="article-info">
+         <div class="author">{{{FormattedAuthor}}}</div>
+         <div class="summary">{{{Summary}}}</div>
+      </div>
+   </div>
+</template>
+
+<!---------- Center ---------->
+
+<template name="Popup">
+   <div id="search">
+      <input id="search-box" placeholder="Search" />
+   </div>
+   
+   <div id="add">
+      <form id="add-form">
+         <input id="add-box" name="entry" placeholder="Enter an RSS feed’s location" />
+      </form>
+   </div>
+   
+   <div id="help">
+      <u>Some shortcuts:</u>
+      <div class="li"><div class="li-bullet">—</div><div class="li-item">Click a publication’s stars to bookmark, with three levels of bookmarking.</div></div>
+      <div class="li"><div class="li-bullet">—</div><div class="li-item">Click an article’s stars to rate it.</div></div>
+      <div id="mobile-help">
+      </div>
+      <div id="desktop-help">
+         <div class="li"><div class="li-bullet">—</div><div class="li-item">Press 0-3 to bookmark/rate.</div></div>
+         <div class="li"><div class="li-bullet">—</div><div class="li-item">Hit delete to mark an article as read.</div></div>
+         <div class="li"><div class="li-bullet">—</div><div class="li-item">Escape clears a search.</div></div>
+         <div class="li"><div class="li-bullet">—</div><div class="li-item">“A” is for adding new publications.</div></div>
+         <div class="li"><div class="li-bullet">—</div><div class="li-item">“F” for find (i.e. search).</div></div>
+         <div class="li"><div class="li-bullet">—</div><div class="li-item">“H” for help.</div></div>
+         <div class="li"><div class="li-bullet">—</div><div class="li-item">“L” for log in.</div></div>
+      </div>
+   </div>
+   
+   <div id="login">{{> loginButtons}}</div>
+</template>
+
+<!---------- Reader ---------->
+
+<template name="Reader">
+   <div id="reader-loading">Loading…</div>
+   <div id="reader-wrapper"><iframe id="reader-iframe" src="{{CurrentArticle}}"></iframe></div>
+</template>
